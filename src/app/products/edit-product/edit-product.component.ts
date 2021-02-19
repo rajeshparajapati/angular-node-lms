@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { ProductsService } from '../../services/products.service';
 import { CategoriesService } from '../../services/categories.service';
 import { ActivatedRoute } from "@angular/router";
+import { ToasterService } from '../../services/toaster.service';
 
 @Component({
   selector: 'app-edit-product',
@@ -16,7 +17,7 @@ export class EditProductComponent implements OnInit {
   categories:any;
   product:FormGroup;
   id:any;
-  constructor(private fb:FormBuilder,private titleService:Title,private productService:ProductsService,private categoryService:CategoriesService,private router:ActivatedRoute) { }
+  constructor(private fb:FormBuilder,private titleService:Title,private productService:ProductsService,private categoryService:CategoriesService,private router:ActivatedRoute,private toasterService: ToasterService) { }
 
   ngOnInit() {
     this.id = this.router.snapshot.paramMap.get("id");
@@ -30,7 +31,7 @@ export class EditProductComponent implements OnInit {
   }
 
   getCategories(){
-    this.categoryService.getCategories().subscribe(res=>{
+    this.categoryService.getAllCategories().subscribe(res=>{
      this.categories= res.data
      this.getProduct()
     })
@@ -46,7 +47,12 @@ export class EditProductComponent implements OnInit {
   onSubmit(){
   let  data = {id:this.id,category_id:this.product.value.category_id,product_name:this.product.value.product_name}
     this.productService.updateProduct(data).subscribe(res=>{
-      console.log(res);
+      if(res.status==200){
+        this.toasterService.showSuccess(res.message);
+        this.product.reset();
+      } else {
+        this.toasterService.showError(res.message)
+      }
     })
   }
 

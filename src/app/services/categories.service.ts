@@ -23,8 +23,12 @@ export class CategoriesService {
    * @method : GET /category_list
    */
 
-  getCategories(){    
-    return this.http.get<any>(this.baseUrl+`/category_list`);
+  getCategories(page:number){    
+    return this.http.get<any>(this.baseUrl+`/category_list/${page}`);
+  }
+
+  getAllCategories(){
+    return this.http.get<any>(this.baseUrl+`/get_all_catogory`);
   }
 
   /**

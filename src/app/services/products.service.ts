@@ -42,7 +42,7 @@ export class ProductsService {
    * @method : Delete /delete_product
    */
 
-  deleteCategory(id:any){    
+  deleteProudct(id:any){    
     return this.http.delete<any>(this.baseUrl+`/delete_product/${id}`);
   }
 

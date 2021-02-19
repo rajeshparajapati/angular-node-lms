@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CategoriesService } from '../../services/categories.service'
+import { CategoriesService } from '../../services/categories.service';
+import { ToasterService } from '../../services/toaster.service';
 declare var $: any;
 @Component({
   selector: 'app-list-categories',
@@ -9,27 +10,39 @@ declare var $: any;
 export class ListCategoriesComponent implements OnInit {
   categories:any;
   dataTable:any;
-  constructor( private categoryService: CategoriesService, private chRef:ChangeDetectorRef ) { }
+  page = 1;
+ 
+  constructor( private categoryService: CategoriesService, private toasterService: ToasterService) { }
 
   ngOnInit() {
-    this.categoryList();
+    this.categoryList(this.page);
   }
 
-  categoryList(){   
-    this.categoryService.getCategories().subscribe((res)=>{
-      this.categories = res.data;  
-      const table: any = $('#example2');
-      table.DataTable().clear().destroy();
-      this.chRef.detectChanges();     
-      this.dataTable = table.DataTable({"info": false, "lengthChange": false,"searching": false,}); 
-      
+  categoryList(page:number){   
+    this.categoryService.getCategories(page).subscribe((res)=>{
+      this.categories = res.data;
+      console.log(this.categories);      
     })
   }
+
+  pagination(page){
+    this.page = page
+    this.categoryList(page)
+  }
+
+  numSequence(n: number): Array<number> { 
+    return Array(n); 
+  } 
 
   deletecategory(id:any){
     if(confirm("Are you sure want to delete if yes, all product mapped also delete")){
       this.categoryService.deleteCategory(id).subscribe(res=>{
-        console.log(res);
+        if(res.status==200){
+          this.toasterService.showSuccess(res.message);
+          this.categoryList(1)
+        } else {
+          this.toasterService.showError(res.message)
+        }
       })
     }   
   }

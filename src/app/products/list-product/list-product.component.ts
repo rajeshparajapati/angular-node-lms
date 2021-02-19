@@ -1,5 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { ProductsService } from '../../services/products.service'
+import { Component, OnInit, ChangeDetectorRef,AfterViewChecked,OnChanges  } from '@angular/core';
+import { ProductsService } from '../../services/products.service';
+import {Router, ActivatedRoute} from "@angular/router"
+import { ToasterService } from '../../services/toaster.service';
+
 declare var $: any;
 
 @Component({
@@ -7,40 +10,50 @@ declare var $: any;
   templateUrl: './list-product.component.html',
   styleUrls: ['./list-product.component.css']
 })
-export class ListProductComponent implements OnInit {
+export class ListProductComponent implements OnInit, AfterViewChecked  {
   products:any;
-  dataTable:any;
+  product_list:any;
   productData=[];
-  page = 0;
-  i = 0; 
-  constructor(private productService:ProductsService,private chRef:ChangeDetectorRef) { }
+  page = 1;
+  constructor(private productService:ProductsService,private chRef:ChangeDetectorRef,public router:Router,private toasterService: ToasterService) { }
 
   ngOnInit() {
-    this.categoryList();
+    this.productList(this.page);
   }
 
-  async categoryList(){   
-    this.page = this.page+1;
-    this.productService.getProducts(this.page).subscribe((res)=>{      
-      const data = res.data;      
-     data.forEach(element => {
-       console.log(element);
-       this.i = this.i+1;
-       let action_  = `<a href="/edit-product/${element._id}" [queryParams]="{debug: true}"><i class="far fa-edit"></i></a> | <a href="javascript:void(0)"  onclick="deleteProduct(\'${element._id}\'})"  ><i class="far fa-trash-alt"></i></a>`
-       this.productData.push({'s_no':this.i,'product_id':element._id,'product_name':element.product_name,"category_id":element.category_id._id,"category_name":element.category_id.category_name,"action":action_}) 
-     });   
-      const table: any = $('#example2');
-      table.DataTable().clear().destroy();
-      this.chRef.detectChanges();     
-      this.dataTable = table.DataTable({"info": false, "lengthChange": false,"searching": false,"columns":[ {data: "s_no"},{data: "product_id"},{data: "product_name"},{data: "category_id"},{data: "category_name"},{data: "action"}]}); 
-      this.dataTable.rows.add(this.productData).draw(false);   
-      
-    })
+  productList(page){   
+        this.productService.getProducts(page).subscribe((res)=>{      
+      this.product_list = res.data;
+            
+    })      
+  }
+  
+  pagination(page){
+    this.productList(page)
   }
 
+
+  numSequence(n: number): Array<number> {  
+    return Array(n); 
+  } 
+  
   deleteProduct(id:any){
-    alert(id);
-
+    if(confirm("Are you sure want to delete")){
+      this.productService.deleteProudct(id).subscribe(res=>{
+        if(res.status==200){
+          this.toasterService.showSuccess(res.message);
+          this.productList(1)
+        } else {
+          this.toasterService.showError(res.message)
+        }
+      })
+    }  
   }
 
+
+
+ngAfterViewChecked(){
+
+  
+}
 }

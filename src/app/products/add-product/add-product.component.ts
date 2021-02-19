@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ProductsService } from '../../services/products.service';
 import { CategoriesService } from '../../services/categories.service';
+import { ToasterService } from '../../services/toaster.service';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class AddProductComponent implements OnInit {
   title = "Add Product";
   categories:any;
   product:FormGroup;
-  constructor(private fb:FormBuilder,private titleService:Title,private productService:ProductsService,private categoryService:CategoriesService) { }
+  constructor(private fb:FormBuilder,private titleService:Title,private productService:ProductsService,private categoryService:CategoriesService,private toasterService: ToasterService) { }
 
   ngOnInit() {
     this.titleService.setTitle(this.title);
@@ -26,7 +27,7 @@ export class AddProductComponent implements OnInit {
   }
 
   getCategories(){
-    this.categoryService.getCategories().subscribe(res=>{
+    this.categoryService.getAllCategories().subscribe(res=>{
      this.categories= res.data
     })
   }
@@ -34,9 +35,12 @@ export class AddProductComponent implements OnInit {
   onSubmit(){
     
    this.productService.addProduct(this.product.value).subscribe(res=>{
-     if(res.status==200){
-       this.product.reset();
-     }
+    if(res.status==200){
+      this.toasterService.showSuccess(res.message);
+      this.product.reset();
+    } else {
+      this.toasterService.showError(res.message)
+    }   
    })
   }
   

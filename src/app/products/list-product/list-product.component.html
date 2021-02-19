@@ -5,7 +5,7 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Categories</h1>
+          <h1>Products</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
@@ -42,21 +42,25 @@
               </tr>
               </thead>
               <tbody>
-             
+                <tr *ngFor="let product of (product_list?.docs); index as i; ">
+                  <td>{{i+1}}</td>
+                  <td>{{product._id}}</td>
+                  <td>{{product.product_name}}</td>
+                  <td>{{product.category_id._id}}</td>
+                  <td>{{product.category_id.category_name}}</td>
+                  <td><a [routerLink]="['/edit-product/',product._id]" ><i class="far fa-edit"></i></a> | <a href="javascript:void(0)"  (click)="deleteProduct(product._id)"  ><i class="far fa-trash-alt"></i></a></td>
+                </tr>
               </tbody>
-              <tfoot>
-              <tr>
-                <th>Sr.No.</th>
-                <th>Product id</th>
-                <th>Product Name</th>   
-                <th>Category id</th>
-                <th>Category Name</th>                           
-                <th>Action</th>
-              </tr>
-              </tfoot>
+              
             </table>
-            <br>
-            <button class="btn btn-block bg-gradient-primary" (click)="categoryList()">Load More</button>
+          
+            <div class="card-tools" style="margin-top: 10px;">
+              <ul class="pagination pagination-sm float-right" *ngIf="product_list?.totalPages > 1 ">               
+                <li class="page-item"  *ngFor="let n of numSequence(product_list?.totalPages); let i = index;" [ngClass]="{'active': product_list?.page ==i+1}" ><a href="javascript:void(0)" class="page-link cursor" (click)="pagination(i+1)">{{i+1}}</a></li>
+               
+               
+              </ul>
+            </div>
           </div>
           <!-- /.card-body -->
         </div>

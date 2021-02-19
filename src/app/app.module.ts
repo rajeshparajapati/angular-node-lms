@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './common/header/header.component';
@@ -36,6 +36,7 @@ import { EditProductComponent } from './products/edit-product/edit-product.compo
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 2000,
       positionClass: 'toast-bottom-right',
