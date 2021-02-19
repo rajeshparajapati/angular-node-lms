@@ -49,7 +49,7 @@ export class EditProductComponent implements OnInit {
     this.productService.updateProduct(data).subscribe(res=>{
       if(res.status==200){
         this.toasterService.showSuccess(res.message);
-        this.product.reset();
+       
       } else {
         this.toasterService.showError(res.message)
       }
