@@ -41,7 +41,7 @@
               </thead>
               <tbody *ngFor="let category of (categories?.docs); index as i;">
               <tr>
-                <td>{{1+i}}</td>
+                <td>{{ ((categories?.page-1)*categories?.limit)+i+1}}</td>
                 <td>{{category._id}}</td>  
                 <td>{{category.category_name}}</td>                           
                 <td><a [routerLink]="['/edit-category/',category._id]" ><i class="far fa-edit"></i></a> | <a href="javascript:void(0)"  (click)="deletecategory(category._id)"  ><i class="far fa-trash-alt"></i></a></td>

@@ -24,6 +24,7 @@ export class ListProductComponent implements OnInit, AfterViewChecked  {
   productList(page){   
         this.productService.getProducts(page).subscribe((res)=>{      
       this.product_list = res.data;
+      console.log(this.product_list)
             
     })      
   }

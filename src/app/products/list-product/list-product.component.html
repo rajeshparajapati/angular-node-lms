@@ -43,7 +43,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let product of (product_list?.docs); index as i; ">
-                  <td>{{i+1}}</td>
+                  <td>{{ ((product_list?.page-1)*product_list?.limit)+i+1}}</td>
                   <td>{{product._id}}</td>
                   <td>{{product.product_name}}</td>
                   <td>{{product.category_id._id}}</td>
